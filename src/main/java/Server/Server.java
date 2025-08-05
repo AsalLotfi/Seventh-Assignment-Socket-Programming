@@ -1,4 +1,5 @@
 package Server;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -17,13 +18,29 @@ public class Server {
     public static ArrayList<ClientHandler> clients = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
-        // TODO: Create a ServerSocket listening on a port (e.g., 12345)
+        int port = 12345;
+        ServerSocket serverSocket = new ServerSocket(port);
+        System.out.println("Server started on port " + port);
 
-        // TODO: Accept incoming client connections in a loop
-        //       For each connection:
-        //       - Create a new ClientHandler object
-        //       - Add it to the 'clients' list
-        //       - Start a new thread to handle communication
+        while (true) {
+            try {
+                // Wait for a client to connect
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("✅ New client connected: " + clientSocket.getInetAddress());
+
+                // Create a ClientHandler for the new connection
+                ClientHandler clientHandler = new ClientHandler(clientSocket, clients);
+
+                // Add to the client list
+                clients.add(clientHandler);
+
+                // starting a new thread for handling the communication
+                new Thread(clientHandler).start();
+            } catch (IOException e) {
+                System.out.println("Error accepting client connection: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
     }
 
     public static boolean authenticate(String username, String password) {

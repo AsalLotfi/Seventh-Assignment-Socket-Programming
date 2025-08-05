@@ -1,6 +1,7 @@
 package Shared;
 
-public class Message {
+public class
+Message {
     /**
      * Note: This class is used to represent structured data exchanged between the client and server
      *       over sockets — such as requests, responses, or commands.
